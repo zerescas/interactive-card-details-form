@@ -87,7 +87,7 @@ main {
 /* Page background */
 
 .accent-bg {
-  background: url(images/bg-main-desktop.png);
+  background: url(../images/bg-main-desktop.png);
   background-repeat: no-repeat;
   background-size: cover;
   grid-row: 1 / span 2;

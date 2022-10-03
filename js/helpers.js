@@ -1,7 +1,7 @@
 /**
- * Setup link inputs with error message
+ * Setup link between inputs and error message
  * @param {*} errMsg jQuery error message element
- * @param {*} submitFormBtn jQuery button for sumbit form 
+ * @param {*} submitFormBtn jQuery button to submit form 
  */
 function linkInputsWithErrMsg(errMsg, submitFormBtn) {
 
@@ -18,68 +18,69 @@ function linkInputsWithErrMsg(errMsg, submitFormBtn) {
     });
 
     listenForInputs();
+}
 
-    // Check validity of all inputs
-    function isInputsValid(inputs) {
-        return inputs.every(input => input[0].checkValidity());
+// Validate linked inputs
+function isInputsValid(inputs) {
+    return inputs.every(input => input[0].checkValidity());
+}
+
+// Hide / Show error message
+function switchVisibilityErrMsg(errMsg, inputs) {
+    if (isInputsValid(inputs)) {
+        errMsg.removeClass("credit-card-form__input-error-msg--manual");
+    } else {
+        errMsg.addClass("credit-card-form__input-error-msg--manual");
     }
+}
 
-    // Hide / Show error message
-    function switchVisibilityErrMsg(errMsg, inputs) {
-        if (isInputsValid(inputs)) {
-            errMsg.removeClass("credit-card-form__input-error-msg--manual");
-        } else {
-            errMsg.addClass("credit-card-form__input-error-msg--manual");
-        }
-    }
+/*
+Manual validate input value after: 
+    1. Some value typed into input
+    2. Send form
+*/
+function listenForInputs() {
+    inputs.forEach(input => {
+        input.on("keyup", () => switchVisibilityErrMsg(errMsg, inputs));
+    });
 
-    // Manual validity check after input update OR send form  
-    function listenForInputs() {
-        inputs.forEach(input => {
-            input.on("keyup", () => switchVisibilityErrMsg(errMsg, inputs));
-        });
-
-        submitFormBtn.on("click", () => {
-            switchVisibilityErrMsg(errMsg, inputs)
-        });
-    }
-
+    submitFormBtn.on("click", () => {
+        switchVisibilityErrMsg(errMsg, inputs)
+    });
 }
 
 /**
  *  
  * @param {*} value Value to validate
- * @param {*} field jQuery $(input) element
- * @param {*} OnEmptyValue Actions for empty value 
- * @param {*} onValidation Actions for validation
- * @param {*} onFieldUpdate Actions for update field value 
+ * @param {*} input jQuery input element
+ * @param {*} OnEmptyValue Action if field has empty value 
+ * @param {*} onValidation Action for validation field value
+ * @param {*} onFieldUpdate Action after update field value 
  * @returns 
  */
 function fieldValidation(
     value,
-    field,
+    input,
     OnEmptyValue,
     onValidation,
     onFieldUpdate) {
 
-    // Get fallback value
+    // Nothing to validate
     if (value == "") {
         OnEmptyValue();
         return;
     }
 
-    let caretPosition = field[0].selectionStart;
-
     // Validate and format value
     value = onValidation(value);
 
-    // Get fallback value
+    // Nothing to validate
     if (value == "") {
         OnEmptyValue(value);
     }
 
     // Update input
-    field.val(value);
+    input.val(value);
 
     if (onFieldUpdate !== undefined) {
         onFieldUpdate();
@@ -88,20 +89,20 @@ function fieldValidation(
 
 /**
  * Remove all except characters
- * @param {*} value 
- * @returns
+ * @param {*} value Source string
+ * @returns String with only characters
  */
-function validateChars(value) {
+function removeExceptChars(value) {
     const regexOnlyChars = /[^\p{Letter}\p{Mark}\s]+/gu;
     return value.replace(regexOnlyChars, "");
 }
 
 /**
  * Remove all except digits
- * @param {*} value 
- * @returns 
+ * @param {*} value Source string 
+ * @returns String with only digits
  */
-function validateDigits(value) {
+function removeExceptDigits(value) {
     const regexOnlyDigits = /[^\d]/g;
     return value.replace(regexOnlyDigits, "");
 }

@@ -1,3 +1,4 @@
+// ### Init
 let card = {
     number: "",
     cardholderName: "",
@@ -8,18 +9,19 @@ let card = {
     }
 }
 $(".credit-card-form-success").hide();
+// ### Init
 
-// cardholder name - input validation
+// Input validation for cardholder-name
 $("#cardholder-name").on("input", function () {
-    let field = $(this);
+    let input = $(this);
     let value = $(this).val();
 
     fieldValidation(
         value,
-        field,
+        input,
         () => card.cardholderName = "Jane Appleseed",
         (cardholderName) => {
-            card.cardholderName = validateChars(cardholderName);
+            card.cardholderName = removeExceptChars(cardholderName);
             return card.cardholderName;
         });
 
@@ -27,19 +29,19 @@ $("#cardholder-name").on("input", function () {
     $(".credit-card--front__holder-name").text(card.cardholderName);
 });
 
-// card number - input validation
+// Input validation for card-number
 $("#card-number").on("input", function (ev) {
-    let field = $(this);
+    let input = $(this);
     let value = $(this).val();
 
     let updateCaretPosistion = () => { };
 
     fieldValidation(
         value,
-        field,
+        input,
         () => card.number = "0000 0000 0000 0000",
         (cardNumber) => {
-            cardNumber = validateDigits(cardNumber);
+            cardNumber = removeExceptDigits(cardNumber);
             let cardNumberFormatted = "";
             let insertedSpaces = 0;
 
@@ -54,9 +56,9 @@ $("#card-number").on("input", function (ev) {
                 }
             }
 
-            let caretPosition = field[0].selectionStart + (field[0].selectionStart % 5 === 0 ? 1 : 0);
+            let caretPosition = input[0].selectionStart + (input[0].selectionStart % 5 === 0 ? 1 : 0);
             updateCaretPosistion = () => {
-                field[0].selectionStart = field[0].selectionEnd = caretPosition;
+                input[0].selectionStart = input[0].selectionEnd = caretPosition;
             };
 
             // Limit card number to 16 digits + insertedSpaces (3)
@@ -71,17 +73,17 @@ $("#card-number").on("input", function (ev) {
     $(".credit-card--front__card-number").text(card.number);
 });
 
-// card expiry date month - input validation
+// Input validation for card expiry month
 $("#card-exp-date-mm").on("input", function () {
-    let field = $(this);
-    let value = field.val();
+    let input = $(this);
+    let value = input.val();
 
     fieldValidation(
         value,
-        field,
+        input,
         () => card.expDate.mm = "00",
         (expDateMM) => {
-            expDateMM = validateDigits(expDateMM);;
+            expDateMM = removeExceptDigits(expDateMM);;
             if (expDateMM != "") {
                 expDateMM = range(expDateMM, 0, 12);
             }
@@ -94,17 +96,17 @@ $("#card-exp-date-mm").on("input", function () {
     $(".credit-card--front__exp-date").text(`${card.expDate.mm}/${card.expDate.yy}`);
 });
 
-// card expiry date year - input validation
+// Input validation for card expiry year
 $("#card-exp-date-yy").on("input", function () {
-    let field = $(this);
-    let value = field.val();
+    let input = $(this);
+    let value = input.val();
 
     fieldValidation(
         value,
-        field,
+        input,
         () => card.expDate.yy = "00",
         (expDateYY) => {
-            card.expDate.yy = validateDigits(expDateYY);
+            card.expDate.yy = removeExceptDigits(expDateYY);
             return card.expDate.yy;
         });
 
@@ -112,17 +114,17 @@ $("#card-exp-date-yy").on("input", function () {
     $(".credit-card--front__exp-date").text(`${card.expDate.mm}/${card.expDate.yy}`);
 });
 
-// card-cvc - input validation
+// Input validation for card-cvc
 $("#card-cvc").on("input", function () {
-    let field = $(this);
-    let value = field.val();
+    let input = $(this);
+    let value = input.val();
 
     fieldValidation(
         value,
-        field,
+        input,
         () => card.cvc = "000",
         (cardCvc) => {
-            card.cvc = validateDigits(cardCvc);
+            card.cvc = removeExceptDigits(cardCvc);
             return card.cvc;
         });
 
@@ -130,12 +132,16 @@ $("#card-cvc").on("input", function () {
     $(".credit-card--back__cvc").text(`${card.cvc}`);
 });
 
-// switch error message for linked expiry date MM + YY  
+/*
+Setup link between:
+    1. Inputs: Expiry date MM / YY
+    2. Error message 
+*/
 const errMsgExpDate = $("#error-msg-exp-date");
 const submitFormBtn = $(".credit-card-form .btn--submit");
 linkInputsWithErrMsg(errMsgExpDate, submitFormBtn);
 
-// credit-card-form validation
+// Validation for credit-card-form
 $(".credit-card-form .btn--submit").on("click", function () {
     const isValid = $(".credit-card-form")[0].checkValidity();
 
@@ -146,15 +152,16 @@ $(".credit-card-form .btn--submit").on("click", function () {
             $(".credit-card-form-success").fadeIn();
         }, 500);
     } else {
-        // Show validation messages under trouble inputs
+        // Unhide invalid inputs
         $(".credit-card-form").addClass("credit-card-form--submitted");
 
+        // Flash error messages
         $(`.credit-card-form--submitted .credit-card-form__input:invalid+.credit-card-form__input-error-msg,
             .credit-card-form__input-error-msg--manual`)
             .fadeOut(200)
             .fadeIn(200);
     }
 
-    // Avoid to execute the form
+    // Avoid an execution the form
     return false;
 });

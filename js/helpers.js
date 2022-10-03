@@ -17,7 +17,7 @@ function linkInputsWithErrMsg(errMsg, submitFormBtn) {
         inputs.push(input);
     });
 
-    listenForInputs();
+    listenForInputs(errMsg, inputs);
 }
 
 // Validate linked inputs
@@ -39,7 +39,7 @@ Manual validate input value after:
     1. Some value typed into input
     2. Send form
 */
-function listenForInputs() {
+function listenForInputs(errMsg, inputs) {
     inputs.forEach(input => {
         input.on("keyup", () => switchVisibilityErrMsg(errMsg, inputs));
     });

@@ -48,7 +48,7 @@ Users should be able to:
 
 ### What I learned
 
-...
+Improve my knowledges about HTML, CSS and so much about Javascript 
 
 ## Author
 

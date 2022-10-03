@@ -28,12 +28,17 @@ Users should be able to:
 
 ### Screenshot
 
-<!-- ![]() <br> -->
+![](images/screenshots/screenshot-desktop.jpeg) <br>
 <strong>Desktop</strong>
 
 <br>
 
-<!-- ![]() <br> -->
+![](images/screenshots/screenshot-tablet.jpeg) <br>
+<strong>Tablet</strong>
+
+<br>
+
+![](images/screenshots/screenshot-mobile.jpeg) <br>
 <strong>Mobile</strong>
 
 ### Links

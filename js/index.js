@@ -83,8 +83,14 @@ $("#card-exp-date-mm").on("input", function () {
         input,
         () => card.expDate.mm = "00",
         (expDateMM) => {
-            expDateMM = removeExceptDigits(expDateMM);;
-            if (expDateMM != "") {
+            expDateMM = removeExceptDigits(expDateMM);
+
+            /* Range value if:
+                1. Field is not empty
+                2. Value more than 9 (Otherwise, it imposible to type values 1-9)
+                3. Value equal 0 (Otherwise, it possible to type 00)
+            */
+            if (expDateMM != "" && expDateMM > 9 || expDateMM == 0) {
                 expDateMM = range(expDateMM, 0, 12);
             }
 
